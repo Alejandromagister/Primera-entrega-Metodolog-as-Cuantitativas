@@ -1,1 +1,1 @@
-# Primera-entrega-Metodolog-as-Cuantitativas
+# Primera-entrega-Metodologías-Cuantitativas
