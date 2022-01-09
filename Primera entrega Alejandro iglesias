@@ -1,0 +1,83 @@
+#Primera entrega Metologías Cuantitativas.
+
+### 2. Instalar estos Paquetes 
+install.packages("tidyverse")
+install.packages("dplyr")
+install.packages("plyr")
+install.packages("tidyr")
+install.packages("mlogit")
+install.packages("stargazer")
+install.packages("rsq")
+install.packages("sjPlot")
+install.packages("dslabs")
+
+### 2.1 Cargar desde la biblioteca estos Paquetes
+library(tidyverse)
+library(dplyr)
+library(plyr)
+library(tidyr)
+library(mlogit)
+library(stargazer)
+library(rsq)
+library(sjPlot)
+library(dslabs)
+
+## 2. Encuesta CEP
+### 2.1 Link: https://www.cepchile.cl/cep/encuestas-cep/encuestas-2010-2021/estudio-nacional-de-opinion-publica-n-85-septiembre-2021
+
+### 2.2 Importar base de datos
+library(haven)
+base_85 <- read_sav("C:/Users/Alex/Desktop/Magíster/Segundo semestre/Metodologías Cuantitativas/R/encuesta_cep_ago2021/base_85.sav")
+View(base_85)
+
+# 2.3Variable numérica
+base_85[sapply(base_85, is.numeric)] <- lapply(base_85[sapply(base_85, is.numeric)], as.factor)
+
+## 3. Análisis descriptivo
+
+### 3.1 Frecuencias
+
+### Variables Independientes: info_enc_56
+table(base_85$info_enc_56)
+
+### Variables Independientes: religion_1
+table(base_85$religion_1)
+
+### Variables Independientes: religion_1
+table(base_85$bienestar_21)
+
+### Variable dependiente: 
+table(base_85$bienestar_2)
+table_A <- table(base_85$bienestar_2)
+prop.table(table_A)
+
+## 5. Recodificar y crear una nueva variable 
+
+## 5.1 Variable dummy RELIGIÓN
+table_7 <- table(base_85$religion_1.Dummy)
+prop.table(table_7)
+
+base_85$religion_1.Dummy<-ifelse(base_85$religion_1=="9",1,0)
+table(base_85$religion_1.Dummy)
+
+## 5.2 Recodificar variables de preferencias --MULTIPLE
+
+## 1: Recodificación variable "Satisfacción con la vida personal".
+table(base_85$bienestar_2)
+base_85$bienestar_2_R = revalue(base_85$bienestar_2, c("1"="1", "2"="1","3"="1", "4"="2", "5"="2", "6"="2", "7"="3", "8"="3","9"="3", "10"="3", "88"="0", "99"="0"))
+table(base_85$bienestar_2_R)
+
+### Tabla contingencia 1: Ocupación y Satisfacción con la vida 
+sjt.xtab(base_85$info_enc_56, #filas
+         base_85$bienestar_2_R, #columnas
+         show.col.prc = T, show.row.prc = T, file = "10.doc")
+
+### Tabla contingencia 2: Presencia/ausencia religión y Satisfacción con la vida 
+sjt.xtab(base_85$religion_1.Dummy, #filas
+         base_85$bienestar_2_R, #columnas
+         show.col.prc = T, show.row.prc = T, file = "13.doc")
+
+### Tabla contingencia 3: Ingresos y Satisfacción con la vida 
+sjt.xtab(base_85$bienestar_21, #filas
+         base_85$bienestar_2_R, #columnas
+         show.col.prc = T, show.row.prc = T, file = "19.doc")
